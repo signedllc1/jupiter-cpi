@@ -7,6 +7,7 @@ use rand::{
     seq::IteratorRandom,
 };
 use solana_program::pubkey;
+use borsh::{BorshSerialize, BorshDeserialize};
 
 // Now, we only support up to 8 authorities between [0, 1, 2, 3, 4, 5, 6, 7]. To create more authorities, we need to
 // add them in the monorepo. We can use from 0 up to 255 in order to prevent hot accounts.
@@ -58,8 +59,9 @@ pub mod jupiter_override {
     use anchor_lang::InstructionData;
     use anchor_lang::{prelude::*, Discriminator};
     use jupiter_amm_interface::Swap as InterfaceSwap;
+    use borsh::{BorshSerialize, BorshDeserialize};
 
-    #[derive(AnchorSerialize, Debug)]
+    #[derive(AnchorSerialize, BorshSerialize, BorshDeserialize, Debug)]
     pub struct RoutePlanStep {
         pub swap: InterfaceSwap,
         pub percent: u8,
@@ -67,7 +69,7 @@ pub mod jupiter_override {
         pub output_index: u8,
     }
 
-    #[derive(AnchorSerialize)]
+    #[derive(AnchorSerialize, BorshSerialize, BorshDeserialize)]
     pub struct Route {
         pub route_plan: Vec<RoutePlanStep>,
         pub in_amount: u64,
@@ -81,7 +83,7 @@ pub mod jupiter_override {
 
     impl InstructionData for Route {}
 
-    #[derive(AnchorSerialize)]
+    #[derive(AnchorSerialize, BorshSerialize, BorshDeserialize)]
     pub struct RouteWithTokenLedger {
         pub route_plan: Vec<RoutePlanStep>,
         pub quoted_out_amount: u64,
@@ -94,7 +96,7 @@ pub mod jupiter_override {
 
     impl InstructionData for RouteWithTokenLedger {}
 
-    #[derive(AnchorSerialize)]
+    #[derive(AnchorSerialize, BorshSerialize, BorshDeserialize)]
     pub struct SharedAccountsRoute {
         pub id: u8,
         pub route_plan: Vec<RoutePlanStep>,
@@ -109,7 +111,7 @@ pub mod jupiter_override {
 
     impl InstructionData for SharedAccountsRoute {}
 
-    #[derive(AnchorSerialize)]
+    #[derive(AnchorSerialize, BorshSerialize, BorshDeserialize)]
     pub struct SharedAccountsRouteWithTokenLedger {
         pub id: u8,
         pub route_plan: Vec<RoutePlanStep>,
